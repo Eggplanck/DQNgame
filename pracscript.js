@@ -1,7 +1,12 @@
 'use strict';
 
-const dqnmodel = await tf.loadLayersModel("https://drive.google.com/file/d/1_JAwLrFOVWxvDzPGxJocsXUnTqTrIuBb/view?usp=sharing");
-console.log(dqnmodel)
+async function loadmodel(){
+    let dqnmodel = await tf.loadLayersModel("https://eggplanck.github.io/DQNgame/DQNmodel/model.json");
+    return dqnmodel
+}
+
+const dqnmodel = loadmodel()
+
 let pafield = new parentField([UserChoice, DQN, RandomWalk, RandomWalk, RandomWalk]);
 
 let field = document.getElementById("field");
