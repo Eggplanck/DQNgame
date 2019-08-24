@@ -1,0 +1,46 @@
+#field {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 375px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.point {
+    width: 20%;
+    height: 20%;
+    border: solid;
+}
+
+#dobutton {
+    position: fixed;
+    top: 390px;
+    left: 100px;
+}
+
+#score {
+    position: fixed;
+    top: 420px;
+}
+#up {
+    position: fixed;
+    top: 420px;
+    right: 50px;
+}
+#right {
+    position: fixed;
+    top: 450px;
+    right: 10px;
+}
+#down {
+    position: fixed;
+    top: 480px;
+    right: 40px;
+}
+#left {
+    position: fixed;
+    top: 450px;
+    right: 80px;
+}
