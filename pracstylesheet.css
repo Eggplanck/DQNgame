@@ -1,3 +1,6 @@
+html{
+    touch-action: manipulation;
+}
 #field {
     position: fixed;
     top: 0;
