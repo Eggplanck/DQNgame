@@ -1,13 +1,15 @@
 'use strict';
 
 async function loadmodel(){
-    let dqnmodel = await tf.loadLayersModel("https://eggplanck.github.io/DQNgame/model.json");
-    return dqnmodel
+    const dqnmodel = await tf.loadLayersModel("https://eggplanck.github.io/DQNgame/model.json");
+    return dqnmodel;
 }
 
-const dqnmodel = loadmodel()
+const dqnmodel = loadmodel();
 
-let pafield = new parentField([UserChoice, DQN, RandomWalk, RandomWalk, RandomWalk]);
+console.log(dqnmodel.summary())
+
+let pafield = new parentField([UserChoice, DQN.bind(null,dqnmodel), RandomWalk, RandomWalk, RandomWalk]);
 
 let field = document.getElementById("field");
 window.addEventListener("load", function() {
@@ -254,7 +256,7 @@ function UserChoice(relativeField, colorState, choice) {
     return choice
 }
 
-function DQN(relativeField, colorState, choice) {
+function DQN(dqnmodel,relativeField, colorState, choice) {
     let color = [0, 0, 0];
     color[colorState] = 1;
     let line_field = [];
@@ -266,7 +268,7 @@ function DQN(relativeField, colorState, choice) {
     }
     line_field = line_field.map((value) => value * 0.2);
     let vector = tf.Tensor([line_field]);
-    let predicted_value = tf.dataSync(dqnmodel.predict(vector))[0];
+    let predicted_value = dqnmodel.predict(vector).dataSync()[0];
     let action = predicted_value.indexOf(Math.max.apply(null, predicted_value));
     return action
 }
