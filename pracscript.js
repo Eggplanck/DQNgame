@@ -1,7 +1,7 @@
 'use strict';
 
 async function loadmodel(){
-    const dqnmodel = await tf.loadLayersModel("https://eggplanck.github.io/DQNgame/model.json");
+    const dqnmodel = await tf.loadLayersModel("https://eggplanck.github.io/DQNgame/DQNmodel1/model.json");
     return dqnmodel;
 }
 
