@@ -1,15 +1,15 @@
 'use strict';
 
-async function loadmodel(){
-    const dqnmodel = await tf.loadLayersModel("https://eggplanck.github.io/DQNgame/DQNmodel1/model.json");
-    return dqnmodel;
+let dqnmodel;
+
+async function loadmodel() {
+    dqnmodel = await tf.loadLayersModel("https://eggplanck.github.io/DQNgame/DQNmodel1/model.json");
+    await dqnmodel.summary();
 }
 
-const dqnmodel = loadmodel();
+loadmodel();
 
-console.log(dqnmodel.summary())
-
-let pafield = new parentField([UserChoice, DQN.bind(null,dqnmodel), RandomWalk, RandomWalk, RandomWalk]);
+let pafield;
 
 let field = document.getElementById("field");
 window.addEventListener("load", function() {
@@ -23,25 +23,49 @@ window.addEventListener("load", function() {
         }
         field.appendChild(column);
     }
+    pafield = new parentField([UserChoice, DQN, DQN, DQN, DQN], [0, 1, 2, 1, 2]);
     pafield.makeField();
     pafield.show();
     pafield.show_score();
+    alert("エージェントは１手毎に色が 赤→緑→青→赤→... の順に変化します。\n同じ場所にいるエージェントの間で得点の与奪が起こります。\n・赤のエージェントは緑のエージェントから１ポイント、青のエージェントから２ポイント奪います。\n・緑のエージェントは青のエージェントから１ポイント奪います。\n・青のエージェントはどのエージェントからもポイントを奪えません。\n１００手後に最も多くのポイントを持っていたエージェントの勝ちです。")
     let up = document.getElementById("up");
     let right = document.getElementById("right");
     let down = document.getElementById("down");
     let left = document.getElementById("left");
-    up.addEventListener('click', pafield.playOneTurn.bind(pafield, 0));
-    right.addEventListener('click', pafield.playOneTurn.bind(pafield, 1));
-    down.addEventListener('click', pafield.playOneTurn.bind(pafield, 2));
-    left.addEventListener('click', pafield.playOneTurn.bind(pafield, 3));
+    up.addEventListener('click', play_turn.bind(null, 0));
+    right.addEventListener('click', play_turn.bind(null, 1));
+    down.addEventListener('click', play_turn.bind(null, 2));
+    left.addEventListener('click', play_turn.bind(null, 3));
 });
 
+function play_turn(choice) {
+    pafield.playOneTurn.call(pafield, choice)
+    if (pafield.turn >= 100) {
+        let WL = true;
+        let you = pafield.agents[0].score;
+        for (let s = 1; s < 5; s++) {
+            if (pafield.agents[s].score > you) {
+                WL = false;
+                break;
+            }
+        }
+        if (WL) {
+            alert("YOU WIN");
+        } else {
+            alert("YOU LOSE");
+        }
+        pafield = new parentField([UserChoice, DQN, DQN, DQN, DQN], [0, 1, 2, 1, 2]);
+        pafield.makeField();
+        pafield.show();
+        pafield.show_score();
+    }
+}
 
-function parentField(actionFunctions) {
+function parentField(actionFunctions, init_color = [null, null, null, null, null]) {
     this.turn = 0;
     this.agents = [];
     for (let i = 0; i < 5; i++) {
-        this.agents.push(new Agent(this, i, actionFunctions[i]));
+        this.agents.push(new Agent(this, i, actionFunctions[i], init_color[i]));
     }
     this.redField = [
         [0, 0, 0, 0, 0],
@@ -184,7 +208,12 @@ function parentField(actionFunctions) {
         }
         let primal = this.agents[0];
         let primals_point = document.getElementById(`p${primal.posy*5+primal.posx}`);
-        primals_point.innerHTML = "Yours"
+        primals_point.innerHTML += "Yours,"
+        for (let t = 1; t < 5; t++) {
+            let agent = this.agents[t];
+            let agents_point = document.getElementById(`p${agent.posy*5+agent.posx}`);
+            agents_point.innerHTML += `Agent${t},`
+        }
     };
 
     this.show_score = function() {
@@ -209,18 +238,22 @@ function parentField(actionFunctions) {
         this.makeField.call(this);
         this.reward.call(this);
         this.show.call(this);
-        this.show_score.call(this)
         this.turn += 1;
+        this.show_score.call(this)
     };
 
 }
 
-function Agent(parentField, number, actionFunction) {
+function Agent(parentField, number, actionFunction, initColor = null) {
     this.number = number;
     this.parentField = parentField;
     this.posx = Math.round(Math.random() * 4);
     this.posy = Math.round(Math.random() * 4);
-    this.colorState = Math.round(Math.random() * 2);
+    if (initColor == null) {
+        this.colorState = Math.round(Math.random() * 2);
+    } else {
+        this.colorState = initColor
+    }
     this.score = 0;
     this.actionFunction = actionFunction;
     this.action = function(relativeField, choice) {
@@ -256,19 +289,23 @@ function UserChoice(relativeField, colorState, choice) {
     return choice
 }
 
-function DQN(dqnmodel,relativeField, colorState, choice) {
-    let color = [0, 0, 0];
-    color[colorState] = 1;
-    let line_field = [];
-    line_field.concat(color);
-    for (let each_field of relativeField) {
-        for (let line of each_field) {
-            line_field.concat(line);
+function DQN(relativeField, colorState, choice) {
+    if (Math.random() < 0.9) {
+        let line_field = [0, 0, 0];
+        line_field[colorState] = 1;
+        for (let each_field of relativeField) {
+            for (let line of each_field) {
+                line_field = line_field.concat(line);
+            }
         }
+        line_field = line_field.map((value) => value * 0.2);
+        line_field = [line_field];
+        let vector = tf.tensor(line_field);
+        let predicted_value = dqnmodel.predict(vector).dataSync();
+        let action = predicted_value.indexOf(Math.max.apply(null, predicted_value));
+        return action
+    } else {
+        let action = Math.round(Math.random() * 3);
+        return action
     }
-    line_field = line_field.map((value) => value * 0.2);
-    let vector = tf.Tensor([line_field]);
-    let predicted_value = dqnmodel.predict(vector).dataSync()[0];
-    let action = predicted_value.indexOf(Math.max.apply(null, predicted_value));
-    return action
 }
