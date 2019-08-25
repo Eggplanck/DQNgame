@@ -6,6 +6,7 @@
     height: 375px;
     border-collapse: collapse;
     table-layout: fixed;
+    font-size: x-small;
 }
 
 .point {
