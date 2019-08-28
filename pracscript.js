@@ -13,17 +13,17 @@ let pafield;
 
 let field = document.getElementById("field");
 window.addEventListener("load", function() {
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < 3; j++) {
         let column = document.createElement("tr");
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 3; i++) {
             let point = document.createElement("td");
-            point.setAttribute('id', `p${5*j+i}`);
+            point.setAttribute('id', `p${3*j+i}`);
             point.className = "point";
             column.appendChild(point);
         }
         field.appendChild(column);
     }
-    pafield = new parentField([UserChoice, DQN, DQN, DQN, DQN], [0, 1, 2, 1, 2]);
+    pafield = new parentField([UserChoice, RandomWalk, RandomWalk, RandomWalk, RandomWalk], [0, 1, 2, 3, 4]);
     pafield.makeField();
     pafield.show();
     pafield.show_score();
@@ -54,7 +54,7 @@ function play_turn(choice) {
         } else {
             alert("YOU LOSE");
         }
-        pafield = new parentField([UserChoice, DQN, DQN, DQN, DQN], [0, 1, 2, 1, 2]);
+        pafield = new parentField([UserChoice, RandomWalk, RandomWalk, RandomWalk, RandomWalk], [0, 1, 2, 3, 4]);
         pafield.makeField();
         pafield.show();
         pafield.show_score();
@@ -68,47 +68,55 @@ function parentField(actionFunctions, init_color = [null, null, null, null, null
         this.agents.push(new Agent(this, i, actionFunctions[i], init_color[i]));
     }
     this.redField = [
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
     ];
     this.greenField = [
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
     ];
     this.blueField = [
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+    ];
+    this.yellowField = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+    ];
+    this.blackField = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
     ];
     this.makeField = function() {
         this.redField = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
         ];
         this.greenField = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
         ];
         this.blueField = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        this.yellowField = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        this.blackField = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
         ];
         for (let agent of this.agents) {
             switch (agent.colorState) {
@@ -121,49 +129,63 @@ function parentField(actionFunctions, init_color = [null, null, null, null, null
                 case 2:
                     this.blueField[agent.posy][agent.posx] += 1;
                     break;
+                case 3:
+                    this.yellowField[agent.posy][agent.posx] += 1;
+                    break;
+                case 4:
+                    this.blackField[agent.posy][agent.posx] += 1;
+                    break;
             }
         }
     };
     this.relativeField = function(posx, posy) {
         let reRedField = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
         ];
         let reGreenField = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
         ];
         let reBlueField = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
         ];
-        for (let i = 0; i < 5; i++) {
-            for (let j = 0; j < 5; j++) {
-                reRedField[i][j] = this.redField[(5 + i + posy) % 5][(5 + j + posx) % 5];
-                reGreenField[i][j] = this.greenField[(5 + i + posy) % 5][(5 + j + posx) % 5];
-                reBlueField[i][j] = this.blueField[(5 + i + posy) % 5][(5 + j + posx) % 5];
+        let reYellowField = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        let reBlackField = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                reRedField[i][j] = this.redField[(3 + i + posy) % 3][(3 + j + posx) % 3];
+                reGreenField[i][j] = this.greenField[(3 + i + posy) % 3][(3 + j + posx) % 3];
+                reBlueField[i][j] = this.blueField[(3 + i + posy) % 3][(3 + j + posx) % 3];
+                reYellowField[i][j] = this.yellowField[(3 + i + posy) % 3][(3 + j + posx) % 3];
+                reBlackField[i][j] = this.blackField[(3 + i + posy) % 3][(3 + j + posx) % 3];
             }
         }
 
         return [
             reRedField,
             reGreenField,
-            reBlueField
+            reBlueField,
+            reYellowField,
+            reBlackField
         ];
     };
 
     this.setColor = function() {
         for (let agent of this.agents) {
-            agent.colorState = (3 + agent.colorState + 1) % 3;
+            agent.colorState = (5 + agent.colorState + 1) % 5;
         }
     };
 
@@ -171,16 +193,34 @@ function parentField(actionFunctions, init_color = [null, null, null, null, null
         for (let agent of this.agents) {
             switch (agent.colorState) {
                 case 0:
-                    agent.score += this.greenField[agent.posy][agent.posx] * 1;
-                    agent.score += this.blueField[agent.posy][agent.posx] * 2;
+                    agent.score += this.greenField[agent.posy][agent.posx] * 0.5;
+                    agent.score += this.yellowField[agent.posy][agent.posx] * 1;
+                    agent.score -= this.blackField[agent.posy][agent.posx] * 1;
+                    agent.score -= this.blueField[agent.posy][agent.posx] * 0.5;
                     break;
                 case 1:
-                    agent.score += this.blueField[agent.posy][agent.posx] * 1;
-                    agent.score -= this.redField[agent.posy][agent.posx] * 1;
+                    agent.score += this.yellowField[agent.posy][agent.posx] * 0.5;
+                    agent.score -= this.blackField[agent.posy][agent.posx] * 1.5;
+                    agent.score -= this.blueField[agent.posy][agent.posx] * 1;
+                    agent.score -= this.redField[agent.posy][agent.posx] * 0.5;
                     break;
                 case 2:
-                    agent.score -= this.redField[agent.posy][agent.posx] * 2;
-                    agent.score -= this.greenField[agent.posy][agent.posx] * 1;
+                    agent.score += this.redField[agent.posy][agent.posx] * 0.5;
+                    agent.score += this.greenField[agent.posy][agent.posx] * 1;
+                    agent.score += this.yellowField[agent.posy][agent.posx] * 1.5;
+                    agent.score -= this.blackField[agent.posy][agent.posx] * 0.5;
+                    break;
+                case 3:
+                    agent.score -= this.blackField[agent.posy][agent.posx] * 2;
+                    agent.score -= this.blueField[agent.posy][agent.posx] * 1.5;
+                    agent.score -= this.redField[agent.posy][agent.posx] * 1;
+                    agent.score -= this.greenField[agent.posy][agent.posx] * 0.5;
+                    break;
+                case 4:
+                    agent.score += this.blueField[agent.posy][agent.posx] * 0.5;
+                    agent.score += this.redField[agent.posy][agent.posx] * 1;
+                    agent.score += this.greenField[agent.posy][agent.posx] * 1.5;
+                    agent.score += this.yellowField[agent.posy][agent.posx] * 2;
                     break;
             }
         }
@@ -192,14 +232,18 @@ function parentField(actionFunctions, init_color = [null, null, null, null, null
         let red = 0;
         let green = 0;
         let blue = 0;
-        for (let i = 0; i < 5; i++) {
-            for (let j = 0; j < 5; j++) {
+        let yellow = 0;
+        let black = 0;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
                 red = this.redField[i][j];
                 green = this.greenField[i][j];
                 blue = this.blueField[i][j];
-                point = document.getElementById(`p${5*i+j}`);
-                if (!(red == 0 && green == 0 && blue == 0)) {
-                    point.style.backgroundColor = `rgb(${100*red/(red+green+blue)}%,${100*green/(red+green+blue)}%,${100*blue/(red+green+blue)}%)`;
+                yellow = this.yellowField[i][j];
+                black = this.blackField[i][j];
+                point = document.getElementById(`p${3*i+j}`);
+                if (!(red == 0 && green == 0 && blue == 0 && yellow == 0 && black == 0)) {
+                    point.style.backgroundColor = `rgb(${100*(red+yellow)/(red+green+blue+yellow+black)}%,${100*(green+yellow)/(red+green+blue+yellow+black)}%,${100*blue/(red+green+blue+yellow+black)}%)`;
                 } else {
                     point.style.backgroundColor = `rgb(100%,100%,100%)`;
                 }
@@ -207,11 +251,11 @@ function parentField(actionFunctions, init_color = [null, null, null, null, null
             }
         }
         let primal = this.agents[0];
-        let primals_point = document.getElementById(`p${primal.posy*5+primal.posx}`);
+        let primals_point = document.getElementById(`p${primal.posy*3+primal.posx}`);
         primals_point.innerHTML += "Yours,"
         for (let t = 1; t < 5; t++) {
             let agent = this.agents[t];
-            let agents_point = document.getElementById(`p${agent.posy*5+agent.posx}`);
+            let agents_point = document.getElementById(`p${agent.posy*3+agent.posx}`);
             agents_point.innerHTML += `Agent${t},`
         }
     };
@@ -247,10 +291,10 @@ function parentField(actionFunctions, init_color = [null, null, null, null, null
 function Agent(parentField, number, actionFunction, initColor = null) {
     this.number = number;
     this.parentField = parentField;
-    this.posx = Math.round(Math.random() * 4);
-    this.posy = Math.round(Math.random() * 4);
+    this.posx = Math.round(Math.random() * 2);
+    this.posy = Math.round(Math.random() * 2);
     if (initColor == null) {
-        this.colorState = Math.round(Math.random() * 2);
+        this.colorState = Math.round(Math.random() * 4);
     } else {
         this.colorState = initColor
     }
@@ -260,16 +304,16 @@ function Agent(parentField, number, actionFunction, initColor = null) {
         let action = this.actionFunction(relativeField, this.colorState, choice);
         switch (action) {
             case 0:
-                this.posy = (5 + this.posy - 1) % 5;
+                this.posy = (3 + this.posy - 1) % 3;
                 break;
             case 1:
-                this.posx = (5 + this.posx + 1) % 5;
+                this.posx = (3 + this.posx + 1) % 3;
                 break;
             case 2:
-                this.posy = (5 + this.posy + 1) % 5;
+                this.posy = (3 + this.posy + 1) % 3;
                 break;
             case 3:
-                this.posx = (5 + this.posx - 1) % 5;
+                this.posx = (3 + this.posx - 1) % 3;
                 break;
         }
     };
@@ -291,7 +335,7 @@ function UserChoice(relativeField, colorState, choice) {
 
 function DQN(relativeField, colorState, choice) {
     if (Math.random() < 0.9) {
-        let line_field = [0, 0, 0];
+        let line_field = [0, 0, 0, 0, 0];
         line_field[colorState] = 1;
         for (let each_field of relativeField) {
             for (let line of each_field) {

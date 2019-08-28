@@ -10,12 +10,12 @@ html{
     border-collapse: collapse;
     table-layout: fixed;
     font-size: x-small;
+    color: white;
 }
 
 .point {
-    width: 20%;
-    height: 20%;
     border: solid;
+    border-color: black;
 }
 
 #dobutton {
