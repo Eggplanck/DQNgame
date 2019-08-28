@@ -4,62 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="pracstylesheet.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>SHiT GAME</title>
 </head>
 
 <body>
-    <div id="errors" style="
-  position: fixed;
-  bottom: 0;
-  background: #c00;
-  color: #fff;
-  display: none;
-  margin: -20px -20px 20px;
-  padding: 20px;
-  white-space: pre-wrap;
-"></div>
-
-
     <table id="field"></table>
 
-    <input type="button" id='up' value="up">
-    <input type="button" id="right" value="right">
-    <input type="button" id="down" value="down">
-    <input type="button" id="left" value="left">
+    <img src="explain.png">
+    <div id="up" class="button">up</div>
+    <div id="right" class="button">right</div>
+    <div id="down" class="button">down</div>
+    <div id="left" class="button">left</div>
     <div id="score"></div>
 
-    <script>
-        window.addEventListener('mousedown', function(e) {
-            document.body.classList.add('mouse-navigation');
-            document.body.classList.remove('kbd-navigation');
-        });
-        window.addEventListener('keydown', function(e) {
-            if (e.keyCode === 9) {
-                document.body.classList.add('kbd-navigation');
-                document.body.classList.remove('mouse-navigation');
-            }
-        });
-        window.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && e.target.getAttribute('href') === '#') {
-                e.preventDefault();
-            }
-        });
-        window.onerror = function(message, source, line, col, error) {
-            var text = error ? error.stack || error : message + ' (at ' + source + ':' + line + ':' + col + ')';
-            errors.textContent += text + '\n';
-            errors.style.display = '';
-        };
-        console.error = (function(old) {
-            return function error() {
-                errors.textContent += Array.prototype.slice.call(arguments).join(' ') + '\n';
-                errors.style.display = '';
-                old.apply(this, arguments);
-            }
-        })(console.error);
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-    <script src="pracscript.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

@@ -23,11 +23,11 @@ window.addEventListener("load", function() {
         }
         field.appendChild(column);
     }
-    pafield = new parentField([UserChoice, RandomWalk, RandomWalk, RandomWalk, RandomWalk], [0, 1, 2, 3, 4]);
+    pafield = new parentField([UserChoice, DQN, DQN, DQN, DQN], [0, 1, 2, 3, 4]);
     pafield.makeField();
     pafield.show();
     pafield.show_score();
-    alert("エージェントは１手毎に色が 赤→緑→青→赤→... の順に変化します。\n同じ場所にいるエージェントの間で得点の与奪が起こります。\n・赤のエージェントは緑のエージェントから１ポイント、青のエージェントから２ポイント奪います。\n・緑のエージェントは青のエージェントから１ポイント奪います。\n・青のエージェントはどのエージェントからもポイントを奪えません。\n１００手後に最も多くのポイントを持っていたエージェントの勝ちです。")
+    alert("エージェントは１手毎に色が 赤→緑→青→黄→黒→赤→... の順に変化します。\n同じ場所にいるエージェントの間で得点の与奪が起こります。\n各エージェントは｛（自分の色の強さ）－（相手の色の強さ）｝だけポイントを奪います。\n１００手後に最も多くのポイントを持っていたエージェントの勝ちです。")
     let up = document.getElementById("up");
     let right = document.getElementById("right");
     let down = document.getElementById("down");
@@ -54,7 +54,7 @@ function play_turn(choice) {
         } else {
             alert("YOU LOSE");
         }
-        pafield = new parentField([UserChoice, RandomWalk, RandomWalk, RandomWalk, RandomWalk], [0, 1, 2, 3, 4]);
+        pafield = new parentField([UserChoice, DQN, DQN, DQN, DQN], [0, 1, 2, 3, 4]);
         pafield.makeField();
         pafield.show();
         pafield.show_score();
