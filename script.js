@@ -27,7 +27,7 @@ window.addEventListener("load", function() {
     pafield.makeField();
     pafield.show();
     pafield.show_score();
-    alert("エージェントは１手毎に色が 赤→緑→青→黄→黒→赤→... の順に変化します。\n同じ場所にいるエージェントの間で得点の与奪が起こります。\n各エージェントは｛（自分の色の強さ）－（相手の色の強さ）｝だけポイントを奪います。\n１００手後に最も多くのポイントを持っていたエージェントの勝ちです。")
+    alert("エージェントは１手毎に色が 赤→緑→青→黄→黒→赤→... の順に変化します。\n同じ場所にいるエージェントの間で得点の与奪が起こります。\n各エージェントは｛（自分の色の強さ）－（相手の色の強さ）｝だけポイントを奪います。\n５０手後に最も多くのポイントを持っていたエージェントの勝ちです。")
     let up = document.getElementById("up");
     let right = document.getElementById("right");
     let down = document.getElementById("down");
@@ -40,7 +40,7 @@ window.addEventListener("load", function() {
 
 function play_turn(choice) {
     pafield.playOneTurn.call(pafield, choice)
-    if (pafield.turn >= 100) {
+    if (pafield.turn >= 50) {
         let WL = true;
         let you = pafield.agents[0].score;
         for (let s = 1; s < 5; s++) {
